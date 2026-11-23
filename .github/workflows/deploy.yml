@@ -1,4 +1,4 @@
-name: Deploy HTML to Somee via FTP
+name: Build and Deploy ASP.NET to Somee
 
 on:
   push:
@@ -6,21 +6,30 @@ on:
       - main
 
 jobs:
-  web-deploy:
-    name: Deploy Website
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Sync files via FTP
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore and Publish
+        run: |
+          dotnet restore
+          dotnet publish -c Release -o ./publish
+
+      - name: FTP Deploy to Somee
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish/
           server-dir: /www.oss-thuc-hanh-t2.somee.com/
           exclude: |
             **/.git*
-            **/.git*/**
             **/.github/**
