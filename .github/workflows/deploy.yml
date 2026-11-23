@@ -1,6 +1,5 @@
-name: Deploy HTML to Hosting via FTP
+name: Deploy HTML to Somee via FTP
 
-# Bắt sự kiện khi có thay đổi (push) trên nhánh main
 on:
   push:
     branches:
@@ -11,19 +10,16 @@ jobs:
     name: Deploy Website
     runs-on: ubuntu-latest
     steps:
-      # Bước 1: Lấy mã nguồn mới nhất từ repo về runner của GitHub
       - name: Get latest code
         uses: actions/checkout@v4
 
-      # Bước 2: Đẩy toàn bộ file lên Hosting qua giao thức FTP
       - name: Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Thay đổi server-dir tùy theo hosting (VD: /www.tenweb.somee.com/ hoặc /htdocs/)
-          server-dir: /www.tenwebcuaban.somee.com/
+          server-dir: /www.oss-thuc-hanh-t2.somee.com/
           exclude: |
             **/.git*
             **/.git*/**
